@@ -94,7 +94,7 @@ h3 {
     background-color: #ccc;
 }
 
-.in-progress h4 {
+.processing h4 {
     color: #1f5699;
     background-color: #77b1f8;
 }
@@ -109,15 +109,14 @@ h3 {
     background-color: #f18383;
 }
 
-/* Задаем фиксированный размер задач */
 .task {
     background-color: #fff;
     padding: 10px;
     margin: 10px 0;
     border-radius: 8px;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-    width: 100%; /* Занимает всю ширину колонки */
-    height: 50px; /* Фиксированная высота для всех задач */
+    width: 100%; 
+    height: 50px; 
     display: flex;
     align-items: center;
     justify-content: left;
@@ -125,15 +124,14 @@ h3 {
     box-sizing: border-box;
     font-weight: 700;
     font-size: 13px;
-    position: relative; /* Для использования псевдоэлемента */
+    position: relative;
 }
 
-/* Полоски для задач в каждой колонке */
 .backlog .task::before {
     background-color: #ccc; /* Соответствует цвету заголовка Backlog */
 }
 
-.in-progress .task::before {
+.processing .task::before {
     background-color: #77b1f8; /* Соответствует цвету заголовка In Progress */
 }
 
