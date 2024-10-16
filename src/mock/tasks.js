@@ -15,6 +15,11 @@ export const tasks = [
       'status':'backlog' 
   },  
   {  
+    'id':'10',  
+    'title':'Купить сахар',  
+    'status':'backlog' 
+  },  
+  {  
       'id':'4',  
       'title':'Сделать 3 лабу',  
       'status':'processing' 
