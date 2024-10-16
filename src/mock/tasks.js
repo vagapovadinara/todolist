@@ -27,7 +27,7 @@ export const tasks = [
   {  
       'id':'6',  
       'title':'Записаться к стоматологу',  
-      'status':'done' 
+      'status':'processing' 
   },  
   {  
       'id':'7',  

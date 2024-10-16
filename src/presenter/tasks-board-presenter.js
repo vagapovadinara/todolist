@@ -1,56 +1,52 @@
 
+import DragAndDropTaskComponent from "../view/drag-and-drop-task-component.js";
 import ClearButtonComponent from '../view/task-clear-button.js';
 import TaskListComponent from '../view/tasks-list-component.js';
 import TaskComponent from '../view/task-component.js';
 import {render} from '../framework/render.js';
 import {Status} from "../const.js";
 
-const numberOfStatuses = 4;
-const numberOfTasks = 4;
-
 export default class TasksBoardPresenter {
- taskBoardContainer;
- taskListComponent;
- tasksModel;
+ #taskBoardContainer;
+ #tasksModel;
 
  constructor({taskBoardContainer, tasksModel}) {
-   this.taskBoardContainer = taskBoardContainer;
-   this.tasksModel = tasksModel;
+   this.#taskBoardContainer = taskBoardContainer;
+   this.#tasksModel = tasksModel;
  }
 
 
  init() {
-    const tasks = [...this.tasksModel.getTasks()];
+    const tasks = [...this.#tasksModel.getTasks()];
     
-    for (let key in Status) {
-      const taskListComponent = new TaskListComponent({
-        status: Status[key],
-      });
+    Object.values(Status).forEach((status) => {
+      const taskListComponent = new TaskListComponent({ status: status });
       const tasksInCurrentStatus = tasks.filter(
-        (task) => task.status === Status[key]
+        (task) => task.status === status
       );
 
-      render (taskListComponent, this.taskBoardContainer);
+      render(taskListComponent, this.#taskBoardContainer);
 
-      for (let key in tasksInCurrentStatus) {
-        const taskComponent = new TaskComponent({
-          task: tasksInCurrentStatus[key],
+      if (tasksInCurrentStatus.length === 0) {
+        render(new DragAndDropTaskComponent(), taskListComponent.element);
+      } else {
+        Object.values(tasksInCurrentStatus).forEach((taskInCurrentStatus) => {
+          this.#renderTask(taskInCurrentStatus, taskListComponent.element);
         });
-        console.log (taskComponent);
-        render(taskComponent, taskListComponent.getElement());
       }
+    });
 
-      
-      if (Status[key] === 'trash'){
-        this.makeClearButton(taskListComponent.getElement());
-      }
-    }
-    
-    
+    this.makeClearButton();
   }
 
-  makeClearButton(trashContainer) {
-    
+  #renderTask(task, container) {
+    const taskComponent = new TaskComponent({ task });
+
+    render(taskComponent, container);
+  }
+
+  makeClearButton() {
+    const trashContainer = document.querySelector(`.${Status.TRASH}`);
     render (new ClearButtonComponent(), trashContainer);
   }
 }
