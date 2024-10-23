@@ -12,12 +12,12 @@ export const tasks = [
   {  
       'id':'3',  
       'title':'Дочитать книгу',  
-      'status':'backlog' 
+      'status':'processing' 
   },  
   {  
     'id':'10',  
     'title':'Купить сахар',  
-    'status':'backlog' 
+    'status':'processing' 
   },  
   {  
       'id':'4',  
