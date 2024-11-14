@@ -1,14 +1,24 @@
-import { tasks } from '../mock/tasks.js';
-import generateId from '../utils.js';
+import generateId from "../utils.js";
+import Observable from "../framework/observable.js";
+import { UpdateType } from "../consts.js";
+import { UserAction } from "../consts.js";
 
-
-
-export default class TasksModel {
+export default class TasksModel extends Observable {
+  #tasksApiService = null;
   #boardTasks;
-  #observers =[];
-  
-  constructor() {
-    this.#boardTasks = tasks;
+
+  constructor({ tasksApiService }) {
+    super();
+    this.#tasksApiService = tasksApiService;
+  }
+
+  async init() {
+    try {
+      const tasks = await this.#tasksApiService.tasks;
+      this.#boardTasks = tasks;
+    } catch (err) {
+      this.#boardTasks = [];
+    }
   }
 
   get tasks() {
@@ -17,36 +27,55 @@ export default class TasksModel {
 
   getTasksByStatus(status) {
     return this.#boardTasks.filter((task) => task.status === status);
-  
   }
 
-  addTask(title) {
+  async addTask(title) {
     const newTask = {
       id: generateId().toString(),
       title,
       status: "backlog",
     };
-    this.#boardTasks.push(newTask);
-    this._notifyObservers();
+
+    try {
+      const createdTask = await this.#tasksApiService.addTask(newTask);
+      this.#boardTasks.push(createdTask);
+      this._notify(UserAction.ADD_TASK, createdTask);
+    } catch (err) {
+      console.error("Ошибка при добавлении задачи на сервер:", err);
+      throw err;
+    }
   }
 
-  deleteTasks(tasks) {
-    tasks.forEach((task) => {
-      this.#deleteTask(task);
-    });
-    this._notifyObservers();
+  async deleteTasks(tasks) {
+    for (const task of tasks) {
+      await this.#deleteTask(task);
+    }
+    this._notify(UserAction.DELETE_TASK, tasks);
   }
 
-  #deleteTask(task) {
-    const index = this.#boardTasks.indexOf(task);
-    this.#boardTasks.splice(index, 1); 
+  async #deleteTask(task) {
+    try {
+      await this.#tasksApiService.deleteTask(task.id);
+    } catch (err) {
+      console.error("Ошибка при удалении задачи на сервере:", err);
+      throw err;
+    }
   }
 
-  updateTaskStatus(taskId, newStatus) {
+  async updateTaskStatus(taskId, newStatus) {
     const task = this.#boardTasks.find((task) => task.id === taskId);
     if (task) {
+      const previousStatus = task.status;
       task.status = newStatus;
-      this._notifyObservers();
+      try {
+        const updatedTask = await this.#tasksApiService.updateTask(task);
+        Object.assign(task, updatedTask);
+        this._notify(UserAction.UPDATE_TASK, task);
+      } catch (err) {
+        console.error("Ошибка при обновлении статуса задачи", err);
+        task.status = previousStatus;
+        throw err;
+      }
     }
   }
 
@@ -60,19 +89,6 @@ export default class TasksModel {
 
     this.tasks.splice(targetIndex, 0, movedTask);
 
-    this._notifyObservers();
+    this._notify("moveTask", taskId);
   }
-
-  addObserver(observer) {
-    this.#observers.push(observer);
-  }
-
-  removeObserver(observer) {
-    this.#observers = this.#observers.filter((obs) => obs !== observer);
-  }
-
-  _notifyObservers() {
-    this.#observers.forEach((observer) => observer());
-  }
-  
 }

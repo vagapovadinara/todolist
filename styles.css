@@ -1,10 +1,8 @@
-html, body {
-    height: 100%;
+ body {
     margin: 0;
     padding: 0;
     font-family: Arial, sans-serif;
     background-color: #f0f4fa;
-    overflow: hidden; 
 }
 
 .header {
@@ -92,7 +90,7 @@ h3 {
     background-color: #ccc;
 }
 
-.processing h4 {
+.inProgress h4 {
     color: #1f5699;
     background-color: #77b1f8;
 }
@@ -139,7 +137,7 @@ h3 {
     background-color: #ccc; /* Соответствует цвету заголовка Backlog */
 }
 
-.processing .task-list::before {
+.inProgress .task-list::before {
     background-color: #77b1f8; /* Соответствует цвету заголовка In Progress */
 }
 

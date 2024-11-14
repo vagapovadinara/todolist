@@ -1,4 +1,4 @@
-import { StatusLabel } from '../const.js';
+import { StatusLabel } from '../consts.js';
 import { AbstractComponent } from '../framework/view/abstract-component.js';
 
 function createTaskListComponentTemplate(status) {
