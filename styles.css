@@ -165,6 +165,7 @@ h3 {
     border-style: groove;
     border-width: 2px;
   }
+
 .clear-button {
 
     width: 100%;
@@ -178,6 +179,13 @@ h3 {
 
 .clear-button:hover {
     background-color: #a11515;
+}
+
+.clear-button:disabled,
+button[disabled] {
+    cursor: not-allowed;
+    background-color: #baa4a4;
+    color: #666666;
 }
 
 .task-element {
